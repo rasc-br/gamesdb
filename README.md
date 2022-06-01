@@ -1,16 +1,61 @@
-# Vue 3 + TypeScript + Vite
+# SIN Games DB
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+A project created with Vue 3 + TypeScript + Vite + ESLint + Prettier + Quasar + Pinia
 
-## Recommended IDE Setup
+## Train of Thought
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+1. Create an application with VITE
 
-## Type Support For `.vue` Imports in TS
+```
+npm create vite@latest
+```
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+2. Use VSCode extensions:
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+- ESLint
+- Prettier - Code formatter
+- Volar
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+3. Follow VITE suggestions and use `<script setup>`, to be able to do so: disable in the current Workspace any other Vue tool like `Vetur` and even the built-in `TypeScript and JavaScript Language Features`.
+
+4. Install `eslint`
+
+```
+npm install --save-dev eslint eslint-plugin-vue
+```
+
+Add configuration information in `package.json`
+
+```
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:vue/vue3-recommended",
+      "@vue/typescript/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2020
+    },
+    "rules": {}
+  }
+```
+
+5. Install `prettier`
+
+```
+npm i --save-dev prettier eslint-config-prettier eslint-plugin-prettier
+```
+
+And add the configurations extensions
+```
+    "extends": [
+      "eslint:recommended",
+      "plugin:vue/vue3-recommended",
+      "@vue/typescript/recommended",
+      "plugin:prettier/recommended"
+    ],
+```
