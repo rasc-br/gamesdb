@@ -21,7 +21,7 @@ npm create vite@latest
 4. Install `eslint`
 
 ```
-npm install --save-dev eslint eslint-plugin-vue
+npm install --save-dev eslint eslint-plugin-vue @vue/eslint-config-typescript vue-eslint-parser
 ```
 
 Add configuration information in `package.json`
@@ -30,15 +30,17 @@ Add configuration information in `package.json`
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "node": true,
+      "vue/setup-compiler-macros": true
     },
+    "parser": "vue-eslint-parser",
     "extends": [
       "eslint:recommended",
       "plugin:vue/vue3-recommended",
       "@vue/typescript/recommended"
     ],
     "parserOptions": {
-      "ecmaVersion": 2020
+      "ecmaVersion": 2022
     },
     "rules": {}
   }
@@ -53,9 +55,16 @@ npm i --save-dev prettier eslint-config-prettier eslint-plugin-prettier
 And add the configurations extensions
 ```
     "extends": [
-      "eslint:recommended",
-      "plugin:vue/vue3-recommended",
-      "@vue/typescript/recommended",
+      ...<other rules>...
       "plugin:prettier/recommended"
     ],
 ```
+
+6. Detailed Explanation:
+- To avoid variables not used error inside `<script setup>` and to be able to use `defineProps` and other functions that are injected inside the setup, we use vue parser `"parser": "vue-eslint-parser",` version 9 or above.
+- For Prettier work ok with typescript and vue3+setup, we add `"@vue/eslint-config-typescript"`
+
+- Documentation:
+https://eslint.vuejs.org/rules/script-setup-uses-vars.html
+https://eslint.vuejs.org/user-guide/#compiler-macros-such-as-defineprops-and-defineemits-generate-no-undef-warnings
+
