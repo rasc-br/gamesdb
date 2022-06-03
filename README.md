@@ -118,4 +118,8 @@ createApp(App).use(createPinia()).use(router).mount("#app");
 
 Create a `store` folder ans set up all store modules there.
 
+9. Add Quasar
+
+Follow: https://quasar.dev/start/vite-plugin
+
 
