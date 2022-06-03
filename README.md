@@ -68,3 +68,42 @@ And add the configurations extensions
 https://eslint.vuejs.org/rules/script-setup-uses-vars.html
 https://eslint.vuejs.org/user-guide/#compiler-macros-such-as-defineprops-and-defineemits-generate-no-undef-warnings
 
+7. Add VueRouter
+
+```
+npm i vue-router
+```
+
+There are multiple ways to use VueRouter, this will use like VueCLI creates it: separating the router into it's own folder.
+- Create a `router` folder inside `src` with a `index.ts` file containing your router information:
+```
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import Main from '../views/MainView.vue';
+
+const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/',
+    name: 'main',
+    component: Main,
+  },
+];
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes,
+});
+export default router;
+```
+Then at `main.ts` add the Router:
+```
+import router from './router';
+
+createApp(App).use(router).mount('#app');
+```
+Note that Vite treats environment variabes different than VueCLI:
+https://vitejs.dev/guide/env-and-mode.html
+
+Therefore: `process.env.BASE_URL` will be `import.meta.env.BASE_URL`
+
+
+
