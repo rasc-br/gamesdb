@@ -74,7 +74,6 @@ https://eslint.vuejs.org/user-guide/#compiler-macros-such-as-defineprops-and-def
 npm i vue-router
 ```
 
-There are multiple ways to use VueRouter, this will use like VueCLI creates it: separating the router into it's own folder.
 - Create a `router` folder inside `src` with a `index.ts` file containing your router information:
 ```
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
@@ -105,5 +104,18 @@ https://vitejs.dev/guide/env-and-mode.html
 
 Therefore: `process.env.BASE_URL` will be `import.meta.env.BASE_URL`
 
+8. Add Pinia
+
+```
+npm i pinia
+```
+Update `main.ts`:
+```
+import { createPinia } from 'pinia'
+
+createApp(App).use(createPinia()).use(router).mount("#app");
+```
+
+Create a `store` folder ans set up all store modules there.
 
 
