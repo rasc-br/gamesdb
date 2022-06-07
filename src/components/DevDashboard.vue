@@ -3,12 +3,15 @@ import { useUserStore } from "../store/useUserStore";
 import { storeToRefs } from "pinia";
 import { computed, ToRefs } from "vue";
 import { UserToken } from "../types";
+import { useAppStatus } from "../store/useAppStatus";
 
 const userStore = useUserStore();
 const { token }: ToRefs<{ token: UserToken }> = storeToRefs(userStore);
 const expirationDate = computed(() =>
   new Date(token.value.expires_at * 1000).toLocaleString()
 );
+const appStore = useAppStatus();
+const { loading }: ToRefs<{ loading: boolean }> = storeToRefs(appStore);
 </script>
 
 <template>
@@ -35,7 +38,11 @@ const expirationDate = computed(() =>
           No token
         </q-card-section>
         <q-card-actions align="around">
-          <q-btn outline style="color: #2196f3" @click="userStore.refreshToken"
+          <q-btn
+            outline
+            style="color: #2196f3"
+            :loading="loading"
+            @click="userStore.refreshToken"
             >Refresh Token</q-btn
           >
         </q-card-actions>

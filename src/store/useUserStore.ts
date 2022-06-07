@@ -1,10 +1,8 @@
-import { defineStore, storeToRefs } from "pinia";
+import { defineStore } from "pinia";
 import { UserToken } from "../types";
 import axios from "axios";
 import { Notify } from "quasar";
-import { doc, setDoc, Firestore, getDoc } from "firebase/firestore";
 import { useAppStatus } from "./useAppStatus";
-import { ToRefs } from "vue";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
@@ -20,6 +18,7 @@ export const useUserStore = defineStore("userStore", {
   }),
   actions: {
     async refreshToken(): Promise<void> {
+      const appStore = useAppStatus();
       const nowInSeconds = new Date().getTime() / 1000;
       if (nowInSeconds <= this.token.expires_at) {
         Notify.create({
@@ -28,10 +27,17 @@ export const useUserStore = defineStore("userStore", {
         });
         return;
       }
-      this.token =
-        (await this.getTokenFromFirestore()) || (await this.getTokenFromAPI());
-      if (!this.token.expires_in) return;
-      this.token.expires_at = nowInSeconds + this.token.expires_in;
+      appStore.toogleLoading(true);
+      this.token = this.getTokenFromLocal() || (await this.getTokenFromAPI());
+      appStore.toogleLoading(false);
+    },
+    getTokenFromLocal(): UserToken | null {
+      const nowInSeconds = new Date().getTime() / 1000;
+      const localToken = localStorage.getItem("token");
+      if (!localToken) return null;
+      const token = JSON.parse(localToken);
+      if (nowInSeconds > (token.expires_at || 0)) return null;
+      return token;
     },
     async getTokenFromAPI(): Promise<UserToken> {
       const queryParameters = `client_id=${
@@ -40,11 +46,13 @@ export const useUserStore = defineStore("userStore", {
         import.meta.env.VITE_TWITCH_SECRET
       }&&grant_type=client_credentials`;
       try {
+        const nowInSeconds = new Date().getTime() / 1000;
         const result = await axios.post(
           `${import.meta.env.VITE_TWITCH_AUTH_URL}?${queryParameters}`
         );
         if (!result.data?.expires_in) throw new Error("No expiration date");
-        this.setTokenInFirestore(result.data);
+        result.data.expires_at = nowInSeconds + this.token.expires_in;
+        localStorage.setItem("token", JSON.stringify(result.data));
         return result.data as UserToken;
       } catch (error) {
         Notify.create({
@@ -54,27 +62,6 @@ export const useUserStore = defineStore("userStore", {
         console.error(error);
         return {} as UserToken;
       }
-    },
-    async getTokenFromFirestore(): Promise<UserToken | null> {
-      const appStore = useAppStatus();
-      const { firestore }: ToRefs<{ firestore: Firestore }> =
-        storeToRefs(appStore);
-      const nowInSeconds = new Date().getTime() / 1000;
-      const userRef = await getDoc(
-        doc(firestore.value, "user", this.user.login)
-      );
-      const user = userRef.data() || {};
-      if (!userRef.exists() || nowInSeconds > (user.token?.expires_at || 0))
-        return null;
-      return userRef.data().token as UserToken;
-    },
-    setTokenInFirestore(token: UserToken): void {
-      const appStore = useAppStatus();
-      const { firestore }: ToRefs<{ firestore: Firestore }> =
-        storeToRefs(appStore);
-      setDoc(doc(firestore.value, "user", this.user.login), token, {
-        merge: true,
-      });
     },
   },
 });
