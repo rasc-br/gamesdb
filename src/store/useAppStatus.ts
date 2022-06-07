@@ -1,12 +1,13 @@
+import { Firestore } from "firebase/firestore";
 import { defineStore } from "pinia";
 
 export const useAppStatus = defineStore("appStatus", {
   state: () => ({
-    darkmode: true,
+    firestore: {} as Firestore,
   }),
   actions: {
-    toggleDarkMode(flag: boolean) {
-      this.darkmode = flag;
+    setFirestore(firestore: Firestore) {
+      this.firestore = firestore;
     },
   },
 });

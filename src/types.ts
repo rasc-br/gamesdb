@@ -4,3 +4,12 @@ export interface UserToken {
   token_type: string;
   expires_at: number;
 }
+
+export interface FirebaseConfig {
+  apiKey: string;
+  authDomain: string;
+  projectId: string;
+  storageBucket: string;
+  messagingSenderId: string;
+  appId: string;
+}

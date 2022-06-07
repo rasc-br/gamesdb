@@ -1,4 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import firebase from "./helpers/firebase";
+import { useAppStatus } from "./store/useAppStatus";
+
+const appStore = useAppStatus();
+appStore.setFirestore(firebase.firestore);
+</script>
 
 <template>
   <router-view />
