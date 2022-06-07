@@ -31,9 +31,13 @@ const expirationDate = computed(() =>
             Expiration Date: {{ expirationDate }}
           </div>
         </q-card-section>
-
+        <q-card-section v-else class="bg-blue text-white">
+          No token
+        </q-card-section>
         <q-card-actions align="around">
-          <q-btn flat @click="userStore.refreshToken">Refresh Token</q-btn>
+          <q-btn outline style="color: #2196f3" @click="userStore.refreshToken"
+            >Refresh Token</q-btn
+          >
         </q-card-actions>
       </q-card>
     </div>
