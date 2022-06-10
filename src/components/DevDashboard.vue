@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useUserStore } from "../store/useUserStore";
 import { storeToRefs } from "pinia";
-import { computed, ToRefs } from "vue";
+import { computed, ref, ToRefs } from "vue";
 import { UserToken } from "../types";
 import { useAppStatus } from "../store/useAppStatus";
+import APIService from "../helpers/apiService";
 
 const userStore = useUserStore();
 const { token }: ToRefs<{ token: UserToken }> = storeToRefs(userStore);
@@ -12,6 +13,10 @@ const expirationDate = computed(() =>
 );
 const appStore = useAppStatus();
 const { loading }: ToRefs<{ loading: boolean }> = storeToRefs(appStore);
+
+const endpoint = ref("");
+const fields = ref("");
+const apiResult = ref("");
 </script>
 
 <template>
@@ -22,7 +27,7 @@ const { loading }: ToRefs<{ loading: boolean }> = storeToRefs(appStore);
       </q-toolbar>
     </q-header>
 
-    <div class="q-pa-md row items-start q-gutter-md">
+    <div class="q-pa-md row justify-center q-gutter-md">
       <q-card class="dashboard-card">
         <q-card-section v-if="token.expires_in" class="bg-blue text-white">
           <div class="text-h6">Current Token</div>
@@ -40,12 +45,51 @@ const { loading }: ToRefs<{ loading: boolean }> = storeToRefs(appStore);
         <q-card-actions align="around">
           <q-btn
             outline
-            style="color: #2196f3"
+            color="primary"
             :loading="loading"
             @click="userStore.refreshToken"
             >Refresh Token</q-btn
           >
         </q-card-actions>
+      </q-card>
+
+      <q-card class="dashboard-card">
+        <q-card-section
+          class="bg-deep-purple-3 text-black q-pa-sm q-gutter-y-sm"
+        >
+          <div class="text-h6">Endpoint Test</div>
+          <q-input
+            v-model="endpoint"
+            color="black"
+            outlined
+            label="Endpoint"
+            :dense="true"
+          />
+          <q-input
+            v-model="fields"
+            color="black"
+            outlined
+            label="Fields"
+            :dense="true"
+          />
+        </q-card-section>
+
+        <q-card-actions align="around">
+          <q-btn
+            outline
+            color="deep-purple-3"
+            :loading="loading"
+            @click="APIService.callAPI(endpoint, fields)"
+            >Call endpoint</q-btn
+          >
+        </q-card-actions>
+      </q-card>
+    </div>
+    <div class="q-pa-md row justify-center q-gutter-md">
+      <q-card class="dashboard-card result">
+        <q-card-section class="q-pa-sm q-gutter-y-sm">
+          <q-field v-model="apiResult" rounded outlined label="Result" />
+        </q-card-section>
       </q-card>
     </div>
   </q-layout>
@@ -54,5 +98,9 @@ const { loading }: ToRefs<{ loading: boolean }> = storeToRefs(appStore);
 .dashboard-card {
   width: 100%;
   max-width: 300px;
+  &.result {
+    max-width: 100vh;
+    min-height: 200px;
+  }
 }
 </style>
