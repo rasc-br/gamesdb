@@ -3,7 +3,6 @@ import { useUserStore } from "../store/useUserStore";
 import { storeToRefs } from "pinia";
 import { UserToken } from "../types";
 import { ToRefs } from "vue";
-import igdb from "igdb-api-node";
 
 async function callAPI(
   endpoint: string,
@@ -26,18 +25,12 @@ async function callAPI(
   // const result = await axios.post(url, body, { headers });
   //  httpsAgent: new https.Agent({ rejectUnauthorized: false }),
 
-  // const result = await axios({
-  //   url,
-  //   method: "POST",
-  //   headers,
-  //   data: body,
-  // });
-
-  igdb(import.meta.env.VITE_TWITCH_CLIENTID, token.value.access_token);
-
-  const result = await igdb()
-    .fields(["name", "movies", "age"])
-    .request("/games");
+  const result = await axios({
+    url,
+    method: "POST",
+    headers,
+    data: body,
+  });
 
   console.log(result);
   return result;
