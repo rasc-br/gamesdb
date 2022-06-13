@@ -16,7 +16,11 @@ const { loading }: ToRefs<{ loading: boolean }> = storeToRefs(appStore);
 
 const endpoint = ref("");
 const fields = ref("");
-const apiResult = ref("");
+const apiResult = ref({});
+
+async function callAPI() {
+  apiResult.value = await APIService.callIGDB(endpoint.value, fields.value);
+}
 </script>
 
 <template>
@@ -57,7 +61,7 @@ const apiResult = ref("");
         <q-card-section
           class="bg-deep-purple-3 text-black q-pa-sm q-gutter-y-sm"
         >
-          <div class="text-h6">Endpoint Test</div>
+          <div class="text-h6">IGDB Endpoint Test</div>
           <q-input
             v-model="endpoint"
             color="black"
@@ -79,7 +83,7 @@ const apiResult = ref("");
             outline
             color="deep-purple-3"
             :loading="loading"
-            @click="APIService.callAPI(endpoint, fields)"
+            @click="callAPI"
             >Call endpoint</q-btn
           >
         </q-card-actions>
@@ -87,8 +91,10 @@ const apiResult = ref("");
     </div>
     <div class="q-pa-md row justify-center q-gutter-md">
       <q-card class="dashboard-card result">
-        <q-card-section class="q-pa-sm q-gutter-y-sm">
-          <q-field v-model="apiResult" rounded outlined label="Result" />
+        <q-card-section class="q-pa-sm q-gutter-y-sm result">
+          <div v-if="Object.keys(apiResult).length">
+            {{ apiResult }}
+          </div>
         </q-card-section>
       </q-card>
     </div>
@@ -99,8 +105,9 @@ const apiResult = ref("");
   width: 100%;
   max-width: 300px;
   &.result {
-    max-width: 100vh;
-    min-height: 200px;
+    height: 200px;
+    overflow: auto;
+    min-width: 500px;
   }
 }
 </style>
