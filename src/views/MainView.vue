@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
+import { storeToRefs } from "pinia";
+import { ref } from "vue";
+import SearchBar from "../components/SearchBar.vue";
+import { useAppStatus } from "../store/useAppStatus";
 
 const toggleLeftDrawer = ref(false);
 
-const route = useRoute();
-const menuClass = computed(() => {
-  return route.path.slice(1) || "main";
-});
+const appStore = useAppStatus();
+const { currentConsole } = storeToRefs(appStore);
 </script>
 
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated :class="['text-white', menuClass]" height-hint="98">
+    <q-header elevated :class="['text-white', currentConsole]" height-hint="98">
       <q-toolbar class="text-white shadow-2 rounded-borders">
         <q-btn
           dense
@@ -23,9 +23,21 @@ const menuClass = computed(() => {
         />
         <q-space />
         <q-tabs shrink stretch>
-          <q-route-tab to="/atari2600" label="Atari 2600" />
-          <q-route-tab to="/msx" label="MSX" />
-          <q-route-tab to="/amiga" label="Amiga" />
+          <q-route-tab
+            label="Atari 2600"
+            to="/atari2600"
+            @click="appStore.setConsole('atari2600')"
+          />
+          <q-route-tab
+            to="/msx"
+            label="MSX"
+            @click="appStore.setConsole('msx')"
+          />
+          <q-route-tab
+            to="/amiga"
+            label="Amiga"
+            @click="appStore.setConsole('amiga')"
+          />
         </q-tabs>
       </q-toolbar>
     </q-header>
@@ -35,9 +47,15 @@ const menuClass = computed(() => {
     </q-drawer>
 
     <q-page-container
-      style="min-height: inherit"
+      class="main-container"
+      align="center"
       @click="toggleLeftDrawer = false"
     >
+      <q-card class="search-card">
+        <q-card-section>
+          <SearchBar />
+        </q-card-section>
+      </q-card>
       <router-view />
     </q-page-container>
 
@@ -83,5 +101,13 @@ const menuClass = computed(() => {
     rgba(143, 139, 141, 1) 9%,
     rgba(250, 250, 250, 1) 100%
   );
+}
+.search-card {
+  margin: 15px;
+  max-width: 600px;
+}
+.main-container {
+  min-height: inherit;
+  padding-top: 5px !important;
 }
 </style>
