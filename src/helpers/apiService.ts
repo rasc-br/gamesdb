@@ -4,7 +4,6 @@ import { storeToRefs } from "pinia";
 import { UserToken } from "../types";
 import { ToRefs } from "vue";
 
-// Ver o retorno dessa budega para receber direito na dashboard
 async function callIGDB(
   endpoint: string,
   fields: string

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import firebase from "./helpers/firebase";
 import { useAppStatus } from "./store/useAppStatus";
+import Main from "./views/MainView.vue";
 
 const appStore = useAppStatus();
 appStore.setFirestore(firebase.firestore);
 </script>
 
 <template>
-  <router-view />
+  <Main />
 </template>
 
 <style>
