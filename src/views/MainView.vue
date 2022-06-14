@@ -24,6 +24,11 @@ const { currentConsole } = storeToRefs(appStore);
         <q-space />
         <q-tabs shrink stretch>
           <q-route-tab
+            label="Main"
+            to="/"
+            @click="appStore.setConsole('main')"
+          />
+          <q-route-tab
             label="Atari 2600"
             to="/atari2600"
             @click="appStore.setConsole('atari2600')"
@@ -107,7 +112,9 @@ const { currentConsole } = storeToRefs(appStore);
   max-width: 600px;
 }
 .main-container {
-  min-height: inherit;
+  --headerAndFooter: 110;
+
+  min-height: calc(100vh - var(--headerAndFooter) * 1px);
   padding-top: 5px !important;
 }
 </style>
