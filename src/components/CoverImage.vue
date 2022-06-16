@@ -5,12 +5,13 @@ interface Props {
   subtitle: string;
   imageUrl: string;
   perspectiveAngle: number;
+  squareSize: number;
 }
 const props = withDefaults(defineProps<Props>(), {
   subtitle: "",
   imageUrl: "",
-  colorTest: "blue",
   perspectiveAngle: 25,
+  squareSize: 200,
 });
 
 const css = reactive({
@@ -28,9 +29,8 @@ const css = reactive({
 
 <style lang="scss" scoped>
 .thumb {
-  width: 300px;
-  height: 300px;
-  margin: 70px auto;
+  width: calc(v-bind("props.squareSize") * 1px);
+  height: calc(v-bind("props.squareSize") * 1px);
   perspective: 1000px;
 }
 
@@ -87,7 +87,7 @@ const css = reactive({
   box-shadow: 0 0 100px 50px rgba(0, 0, 0, 0.5);
   transition: all 0.5s;
   opacity: 0.15;
-  transform: rotateX(95deg) translateZ(-80px) scale(0.75);
+  transform: rotateX(95deg) translateZ(-10px) scale(0.75);
   transform-origin: bottom;
 }
 
