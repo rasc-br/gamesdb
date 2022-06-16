@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import firebase from "./helpers/firebase";
 import { useAppStatus } from "./store/useAppStatus";
-import Main from "./views/MainView.vue";
 
 const appStore = useAppStatus();
 appStore.setFirestore(firebase.firestore);
 </script>
 
 <template>
-  <Main />
+  <router-view />
 </template>
 
 <style>
@@ -19,5 +18,9 @@ appStore.setFirestore(firebase.firestore);
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+:root {
+  --headerAndFooterHeight: 110;
+  --searchBarHeight: 90;
 }
 </style>

@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import SearchBar from "../components/SearchBar.vue";
+import SpotlightGames from "../components/SpotlightGames.vue";
 import { useAppStatus } from "../store/useAppStatus";
 
 const toggleLeftDrawer = ref(false);
@@ -11,7 +12,7 @@ const { currentConsole } = storeToRefs(appStore);
 </script>
 
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR fFf" class="app-layout">
     <q-header elevated :class="['text-white', currentConsole]" height-hint="98">
       <q-toolbar class="text-white shadow-2 rounded-borders">
         <q-btn
@@ -23,23 +24,19 @@ const { currentConsole } = storeToRefs(appStore);
         />
         <q-space />
         <q-tabs shrink stretch>
-          <q-route-tab
+          <q-tab
             label="Main"
-            to="/"
+            name="main"
             @click="appStore.setConsole('main')"
           />
-          <q-route-tab
+          <q-tab
             label="Atari 2600"
             to="/atari2600"
             @click="appStore.setConsole('atari2600')"
           />
-          <q-route-tab
-            to="/msx"
-            label="MSX"
-            @click="appStore.setConsole('msx')"
-          />
-          <q-route-tab
-            to="/amiga"
+          <q-tab name="msx" label="MSX" @click="appStore.setConsole('msx')" />
+          <q-tab
+            name="amiga"
             label="Amiga"
             @click="appStore.setConsole('amiga')"
           />
@@ -61,13 +58,13 @@ const { currentConsole } = storeToRefs(appStore);
           <SearchBar />
         </q-card-section>
       </q-card>
-      <router-view />
+      <SpotlightGames />
     </q-page-container>
 
     <q-footer elevated class="bg-grey-8 text-white">
       <q-toolbar>
         <q-toolbar-title>
-          <div>SIN Games Database</div>
+          <div class="text-subtitle2">SIN Games Database</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -110,11 +107,14 @@ const { currentConsole } = storeToRefs(appStore);
 .search-card {
   margin: 15px;
   max-width: 600px;
+  max-height: calc(var(--searchBarHeight) * 1px);
 }
 .main-container {
-  --headerAndFooter: 110;
-
-  min-height: calc(100vh - var(--headerAndFooter) * 1px);
+  min-height: calc(100vh - var(--headerAndFooterHeight) * 1px);
   padding-top: 5px !important;
+}
+.app-layout {
+  max-height: calc(var(--searchBarHeight) * 1px);
+  min-height: unset !important;
 }
 </style>
