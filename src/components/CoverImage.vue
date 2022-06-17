@@ -2,10 +2,10 @@
 import { reactive } from "vue";
 
 interface Props {
-  subtitle: string;
+  subtitle?: string;
   imageUrl: string;
-  perspectiveAngle: number;
-  squareSize: number;
+  perspectiveAngle?: number;
+  squareSize?: number;
 }
 const props = withDefaults(defineProps<Props>(), {
   subtitle: "",

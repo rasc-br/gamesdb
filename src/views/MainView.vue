@@ -13,7 +13,11 @@ const { currentConsole } = storeToRefs(appStore);
 
 <template>
   <q-layout view="hHh lpR fFf" class="app-layout">
-    <q-header elevated :class="['text-white', currentConsole]" height-hint="98">
+    <q-header
+      elevated
+      :class="['text-white', currentConsole.name]"
+      height-hint="98"
+    >
       <q-toolbar class="text-white shadow-2 rounded-borders">
         <q-btn
           dense

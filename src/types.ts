@@ -13,3 +13,19 @@ export interface FirebaseConfig {
   messagingSenderId: string;
   appId: string;
 }
+
+export interface ConsoleInfo {
+  name: string;
+  mainColor: string;
+  igdbId: number;
+}
+
+export interface Game {
+  id: number;
+  cover: GameCover;
+}
+
+export interface GameCover {
+  id: number;
+  url: string;
+}

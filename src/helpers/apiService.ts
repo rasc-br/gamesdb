@@ -6,10 +6,17 @@ import { ToRefs } from "vue";
 
 async function callIGDB(
   endpoint: string,
-  fields: string
-): Promise<Record<string, unknown>> {
+  fields = "*",
+  query = "",
+  pagination = "",
+  sort = ""
+): Promise<Array<Record<string, unknown>>> {
   const userStore = useUserStore();
   const { token }: ToRefs<{ token: UserToken }> = storeToRefs(userStore);
+  const nowInSeconds = new Date().getTime() / 1000;
+  if (nowInSeconds > token.value.expires_at) {
+    await userStore.refreshToken();
+  }
   const freeCorsProxy =
     import.meta.env.MODE === "development"
       ? "https://cors-anywhere.herokuapp.com/"
@@ -23,7 +30,7 @@ async function callIGDB(
     "Client-ID": clientId,
     Authorization: `Bearer ${token.value.access_token}`,
   };
-  const body = `fields ${fields};`;
+  const body = `fields ${fields}; ${query}; ${pagination}; ${sort};`;
   try {
     const result = await axios({
       url,
@@ -34,7 +41,7 @@ async function callIGDB(
     return result.data || {};
   } catch (error) {
     console.error(error);
-    return {};
+    return [];
   }
 }
 

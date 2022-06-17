@@ -16,10 +16,18 @@ const { loading }: ToRefs<{ loading: boolean }> = storeToRefs(appStore);
 
 const endpoint = ref("");
 const fields = ref("");
+const pagination = ref("");
+const sort = ref("");
+const query = ref("");
 const apiResult = ref({});
 
 async function callAPI() {
-  apiResult.value = await APIService.callIGDB(endpoint.value, fields.value);
+  apiResult.value = await APIService.callIGDB(
+    endpoint.value,
+    fields.value,
+    pagination.value,
+    sort.value
+  );
 }
 </script>
 
@@ -68,14 +76,51 @@ async function callAPI() {
             outlined
             label="Endpoint"
             :dense="true"
-          />
+            bottom-slots
+          >
+            <template #hint> Ex. games </template>
+          </q-input>
           <q-input
             v-model="fields"
             color="black"
             outlined
             label="Fields"
             :dense="true"
-          />
+            bottom-slots
+          >
+            <template #hint> Ex. * </template>
+          </q-input>
+          <q-input
+            v-model="query"
+            color="black"
+            outlined
+            label="Query"
+            :dense="true"
+            bottom-slots
+          >
+            <template #hint> Ex. where game.platforms = 48 & ... </template>
+          </q-input>
+          <q-input
+            v-model="pagination"
+            color="black"
+            outlined
+            label="Pagination"
+            :dense="true"
+            bottom-slots
+          >
+            <template #hint> Ex. limit 50; offset 10 </template>
+          </q-input>
+
+          <q-input
+            v-model="sort"
+            color="black"
+            outlined
+            label="Sort"
+            :dense="true"
+            bottom-slots
+          >
+            <template #hint> Ex. sort name asc </template>
+          </q-input>
         </q-card-section>
 
         <q-card-actions align="around">

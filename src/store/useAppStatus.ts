@@ -1,16 +1,17 @@
 import { Firestore } from "firebase/firestore";
 import { defineStore } from "pinia";
+import { ConsoleInfo } from "../types";
 
-function switchColor(console: string): string {
+function getConsoleValues(console: string): ConsoleInfo {
   switch (console) {
     case "atari2600":
-      return "yellow-8";
+      return { name: "atari2600", mainColor: "yellow-8", igdbId: 59 };
     case "msx":
-      return "blue-14";
+      return { name: "msx", mainColor: "blue-14", igdbId: 27 };
     case "amiga":
-      return "red-8";
+      return { name: "amiga", mainColor: "red-8", igdbId: 16 };
     default:
-      return "grey-6";
+      return { name: "main", mainColor: "grey-6", igdbId: 0 };
   }
 }
 
@@ -18,8 +19,11 @@ export const useAppStatus = defineStore("appStatus", {
   state: () => ({
     firestore: {} as Firestore,
     loading: false,
-    currentConsole: "main",
-    mainColor: "grey-6",
+    currentConsole: {
+      name: "main",
+      mainColor: "grey-6",
+      igdbId: 0,
+    },
   }),
   actions: {
     setFirestore(firestore: Firestore) {
@@ -29,8 +33,7 @@ export const useAppStatus = defineStore("appStatus", {
       this.loading = flag;
     },
     setConsole(console: string) {
-      this.currentConsole = console;
-      this.mainColor = switchColor(console);
+      this.currentConsole = getConsoleValues(console);
     },
   },
 });
