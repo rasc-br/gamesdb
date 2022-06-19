@@ -15,7 +15,7 @@ export interface FirebaseConfig {
 }
 
 export interface ConsoleInfo {
-  name: string;
+  name: 'main' | 'atari2600' | 'msx' | 'amiga';
   mainColor: string;
   igdbId: number;
 }

@@ -23,7 +23,7 @@ export const useAppStatus = defineStore("appStatus", {
       name: "main",
       mainColor: "grey-6",
       igdbId: 0,
-    },
+    } as ConsoleInfo,
   }),
   actions: {
     setFirestore(firestore: Firestore) {

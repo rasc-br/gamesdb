@@ -47,8 +47,8 @@ const { spotlightGames } = storeToRefs(gameStore);
     <q-card-section>
       <q-infinite-scroll :offset="500" class="spotlight-session">
         <div
-          v-for="(spotLightGame, index) in spotlightGames"
-          :key="index"
+          v-for="spotLightGame in spotlightGames[currentConsole.name]"
+          :key="spotLightGame.id"
           class="game-cover"
         >
           <CoverImage :image-url="spotLightGame.cover.url" />

@@ -42,6 +42,7 @@ const css = reactive({
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
     var(--propBackground);
   background-size: 0, cover;
+  background-repeat: round;
   transform-style: preserve-3d;
   transition: all 0.5s;
 }
