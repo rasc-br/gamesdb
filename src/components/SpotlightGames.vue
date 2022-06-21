@@ -60,7 +60,10 @@ watch(currentConsole, (newConsole, oldConsole) => {
 </script>
 
 <template>
-  <q-card ref="scrollTargetRef" class="spotlight-card">
+  <q-card
+    ref="scrollTargetRef"
+    :class="['spotlight-card', currentConsole.name]"
+  >
     <q-infinite-scroll
       class="spotlight-session"
       :offset="500"
@@ -104,5 +107,25 @@ watch(currentConsole, (newConsole, oldConsole) => {
 .break {
   flex-basis: 100%;
   height: 0;
+}
+.atari2600::-webkit-scrollbar-thumb {
+  background-color: rgba(226, 197, 2, 1);
+}
+.msx::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 39, 255, 1);
+}
+.amiga::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 0, 0, 1);
+}
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 20px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 20px;
 }
 </style>
