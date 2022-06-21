@@ -14,8 +14,11 @@ export interface FirebaseConfig {
   appId: string;
 }
 
+export type ConsoleName = 'main' | 'atari2600' | 'msx' | 'amiga';
+export type OffsetType = 'spotlight' | 'search';
+
 export interface ConsoleInfo {
-  name: 'main' | 'atari2600' | 'msx' | 'amiga';
+  name: ConsoleName;
   mainColor: string;
   igdbId: number;
 }
@@ -29,3 +32,14 @@ export interface GameCover {
   id: number;
   url: string;
 }
+
+export type Pagination = {
+  [key in ConsoleName]: {
+    spotlight: number;
+    search: number;
+  };
+};
+
+export type GamesGroup = {
+  [key in ConsoleName]: Game[];
+};

@@ -1,8 +1,8 @@
 import { Firestore } from "firebase/firestore";
 import { defineStore } from "pinia";
-import { ConsoleInfo } from "../types";
+import { ConsoleInfo, ConsoleName, OffsetType, Pagination } from "../types";
 
-function getConsoleValues(console: string): ConsoleInfo {
+function getConsoleValues(console: ConsoleName): ConsoleInfo {
   switch (console) {
     case "atari2600":
       return { name: "atari2600", mainColor: "yellow-8", igdbId: 59 };
@@ -24,6 +24,7 @@ export const useAppStatus = defineStore("appStatus", {
       mainColor: "grey-6",
       igdbId: 0,
     } as ConsoleInfo,
+    pagination: {} as Pagination,
   }),
   actions: {
     setFirestore(firestore: Firestore) {
@@ -32,8 +33,12 @@ export const useAppStatus = defineStore("appStatus", {
     toogleLoading(flag: boolean) {
       this.loading = flag;
     },
-    setConsole(console: string) {
+    setConsole(console: ConsoleName) {
       this.currentConsole = getConsoleValues(console);
+    },
+    setPaginationOffset(console: ConsoleName, type: OffsetType, offset: number) {
+      if (!this.pagination[console]) this.pagination = { ...this.pagination, ...{[console]: { [type]: 0}}}
+      this.pagination[console][type] = offset;
     },
   },
 });
