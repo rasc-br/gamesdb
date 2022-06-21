@@ -5,15 +5,16 @@ import { useAppStatus } from "../store/useAppStatus";
 
 const appStore = useAppStatus();
 const { currentConsole } = storeToRefs(appStore);
-const searchText = ref("");
+const { searchText } = storeToRefs(appStore);
 </script>
 
 <template>
   <q-input
     v-model="searchText"
     :color="currentConsole.mainColor"
+    debounce="500"
     outlined
-    label="Search"
+    label="Search by name"
   >
     <template #append>
       <q-icon

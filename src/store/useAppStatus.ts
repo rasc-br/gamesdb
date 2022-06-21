@@ -25,6 +25,7 @@ export const useAppStatus = defineStore("appStatus", {
       igdbId: 0,
     } as ConsoleInfo,
     pagination: {} as Pagination,
+    searchText: "",
   }),
   actions: {
     setFirestore(firestore: Firestore) {
@@ -39,6 +40,9 @@ export const useAppStatus = defineStore("appStatus", {
     setPaginationOffset(console: ConsoleName, type: OffsetType, offset: number) {
       if (!this.pagination[console]) this.pagination = { ...this.pagination, ...{[console]: { [type]: 0}}}
       this.pagination[console][type] = offset;
+    },
+    setSearch(text: string) {
+      this.searchText = text;
     },
   },
 });

@@ -1,48 +1,62 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, Ref, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
 import CoverImage from "./CoverImage.vue";
 import APIService from "../helpers/apiService";
 import { useGameStore } from "../store/useGameStore";
+import { GamesGroup } from "../types";
+
+const props = defineProps<{
+  type: "spotlight" | "search";
+}>();
 
 const appStore = useAppStatus();
 const gameStore = useGameStore();
 const { currentConsole } = storeToRefs(appStore);
 const { pagination } = storeToRefs(appStore);
-const { spotlightGames } = storeToRefs(gameStore);
+const { searchText } = storeToRefs(appStore);
 const limit = 20;
 const scrollTargetRef = ref<HTMLElement>();
 const retries = ref(0);
 const loading = ref(false);
 
+const games: Ref<GamesGroup> = computed(() => {
+  const gamesGroup: "spotlightGames" | "searchGames" = `${props.type}Games`;
+  return storeToRefs(gameStore)[gamesGroup].value;
+});
+
 async function getMoreCovers(index: number, done: () => void): Promise<void> {
   await getCovers();
-  done(); // Review empty or no more covers
+  done();
 }
 
 async function getCovers(): Promise<Record<string, unknown>[]> {
   if (!currentConsole.value.igdbId || retries.value > 3) return [];
   const currentOffset =
-    pagination.value[currentConsole.value.name]?.spotlight || 0;
+    pagination.value[currentConsole.value.name]?.[props.type] || 0;
   try {
     loading.value = true;
+    const query = `where game.platforms = ${currentConsole.value.igdbId}`;
+    const searchQuery = searchText.value
+      ? ` & where name = *"${searchText.value}"*`
+      : "";
     const result = await APIService.callIGDB(
       "covers",
       "game, url",
-      `where game.platforms = ${currentConsole.value.igdbId}`,
+      `${query}${searchQuery}`,
       `limit ${limit}; offset ${currentOffset}`,
       `sort rating desc`
     );
     const newOffset: number = currentOffset + limit;
     appStore.setPaginationOffset(
       currentConsole.value.name,
-      "spotlight",
+      props.type,
       newOffset
     );
     if (result.length) {
       retries.value = 0;
-      gameStore.setGamesCover(result);
+      gameStore.setGamesCover(result, props.type);
       return result;
     }
   } catch (error) {
@@ -54,37 +68,29 @@ async function getCovers(): Promise<Record<string, unknown>[]> {
   }
   return [];
 }
-
-watch(currentConsole, (newConsole, oldConsole) => {
-  if (
-    newConsole.name !== oldConsole.name &&
-    !spotlightGames.value[newConsole.name]
-  )
+watch([currentConsole, props], () => {
+  if (!games.value[currentConsole.value.name]) {
+    retries.value = 0;
     getCovers();
+  }
 });
 </script>
 
 <template>
-  <q-card
-    ref="scrollTargetRef"
-    :class="['spotlight-card', currentConsole.name]"
-  >
+  <q-card ref="scrollTargetRef" :class="['games-card', currentConsole.name]">
     <q-infinite-scroll
-      v-if="
-        spotlightGames[currentConsole.name] &&
-        spotlightGames[currentConsole.name].length
-      "
-      class="spotlight-session"
+      v-if="games[currentConsole.name] && games[currentConsole.name].length"
+      class="games-session"
       :offset="500"
       :scroll-target="scrollTargetRef"
       @load="getMoreCovers"
     >
       <div
-        v-for="spotLightGame in spotlightGames[currentConsole.name]"
-        :key="spotLightGame.id"
+        v-for="game in games[currentConsole.name]"
+        :key="game.id"
         class="game-cover"
       >
-        <CoverImage :image-url="spotLightGame.cover.url" />
+        <CoverImage :image-url="game.cover.url" />
       </div>
       <div class="break"></div>
       <template #loading>
@@ -101,7 +107,7 @@ watch(currentConsole, (newConsole, oldConsole) => {
 </template>
 
 <style lang="scss" scoped>
-.spotlight-card {
+.games-card {
   max-width: 80%;
   height: calc(
     100vh - (var(--headerAndFooterHeight) + var(--searchBarHeight) + 50) * 1px
@@ -109,7 +115,7 @@ watch(currentConsole, (newConsole, oldConsole) => {
   overflow: auto;
   padding: 10px;
 }
-.spotlight-session {
+.games-session {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

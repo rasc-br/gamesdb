@@ -5,9 +5,11 @@ import { useAppStatus } from "./useAppStatus";
 export const useGameStore = defineStore("gameStore", {
   state: () => ({
     spotlightGames: {} as GamesGroup,
+    searchGames:  {} as GamesGroup,
   }),
   actions: {
-    setSpotlightGamesCover(covers: Record<string, unknown>[]) {
+    setGamesCover(covers: Record<string, unknown>[], type: "spotlight" | "search") {
+      const gamesGroup: "spotlightGames" | "searchGames" = `${type}Games`;
       const appStore = useAppStatus();
       const { currentConsole } = storeToRefs(appStore);
       const consolename = currentConsole.value.name;
@@ -16,18 +18,18 @@ export const useGameStore = defineStore("gameStore", {
           id: gameCover.id as number,
           url: (gameCover.url as string).replace(/t_thumb/, "t_cover_big_2x"),
         };
-        const gameIndex: number = this.spotlightGames[consolename] ? this.spotlightGames[consolename].findIndex(
+        const gameIndex: number = this[gamesGroup][consolename] ? this[gamesGroup][consolename].findIndex(
           (game) => gameCover.game === game.id
         ) : -1;
         if (gameIndex === -1) {
-          if (!this.spotlightGames[consolename]) this.spotlightGames[consolename] = [];
-          this.spotlightGames[consolename].push({
+          if (!this[gamesGroup][consolename]) this[gamesGroup][consolename] = [];
+          this[gamesGroup][consolename].push({
             id: gameCover.game as number,
             cover,
           });
           return;
         }
-        this.spotlightGames[consolename][gameIndex].cover = cover;
+        this[gamesGroup][consolename][gameIndex].cover = cover;
       });
     },
   },
