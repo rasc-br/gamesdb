@@ -25,6 +25,7 @@ async function callAPI() {
   apiResult.value = await APIService.callIGDB(
     endpoint.value,
     fields.value,
+    query.value,
     pagination.value,
     sort.value
   );

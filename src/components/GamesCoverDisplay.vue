@@ -26,12 +26,15 @@ const games: Ref<GamesGroup> = computed(() => {
   return storeToRefs(gameStore)[gamesGroup].value;
 });
 
-async function getMoreCovers(index: number, done: () => void): Promise<void> {
-  await getCovers();
-  done();
+async function getMoreCovers(
+  index: number,
+  done: (stop?: boolean | undefined) => void
+): Promise<void> {
+  const result = await getCovers();
+  result.length ? done() : done(true);
 }
 
-async function getCovers(): Promise<Record<string, unknown>[]> {
+async function getCovers(): Promise<unknown[]> {
   if (!currentConsole.value.igdbId || retries.value > 3) return [];
   const currentOffset =
     pagination.value[currentConsole.value.name]?.[props.type] || 0;
@@ -39,23 +42,23 @@ async function getCovers(): Promise<Record<string, unknown>[]> {
     loading.value = true;
     const query = `where game.platforms = ${currentConsole.value.igdbId}`;
     const searchQuery = searchText.value
-      ? ` & where name = *"${searchText.value}"*`
+      ? ` & game.slug = *"${searchText.value}"*`
       : "";
     const result = await APIService.callIGDB(
       "covers",
-      "game, url",
+      "*",
       `${query}${searchQuery}`,
       `limit ${limit}; offset ${currentOffset}`,
       `sort rating desc`
     );
-    const newOffset: number = currentOffset + limit;
-    appStore.setPaginationOffset(
-      currentConsole.value.name,
-      props.type,
-      newOffset
-    );
     if (result.length) {
       retries.value = 0;
+      const newOffset: number = currentOffset + limit;
+      appStore.setPaginationOffset(
+        currentConsole.value.name,
+        props.type,
+        newOffset
+      );
       gameStore.setGamesCover(result, props.type);
       return result;
     }
