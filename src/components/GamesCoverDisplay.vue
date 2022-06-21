@@ -40,7 +40,7 @@ async function getCovers(): Promise<unknown[]> {
     pagination.value[currentConsole.value.name]?.[props.type] || 0;
   try {
     loading.value = true;
-    const query = `where game.platforms = ${currentConsole.value.igdbId}`;
+    const query = `where game.platforms = [${currentConsole.value.igdbId}]`;
     const searchQuery = searchText.value
       ? ` & game.slug = *"${searchText.value}"*`
       : "";
