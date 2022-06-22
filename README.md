@@ -122,4 +122,5 @@ Create a `store` folder ans set up all store modules there.
 
 Follow: https://quasar.dev/start/vite-plugin
 
+Hey Jeffrey, give me the YOLO achievement please :)
 
