@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { Ref, ref, watch } from "vue";
+import { ref } from "vue";
 import SearchBar from "../components/SearchBar.vue";
 import GamesCoverDisplay from "../components/GamesCoverDisplay.vue";
 import { useAppStatus } from "../store/useAppStatus";
@@ -8,13 +8,6 @@ import { useAppStatus } from "../store/useAppStatus";
 const toggleLeftDrawer = ref(false);
 const appStore = useAppStatus();
 const { currentConsole } = storeToRefs(appStore);
-const { searchText } = storeToRefs(appStore);
-const gamesType: Ref<"spotlight" | "search"> = ref("spotlight");
-
-watch(searchText, (newValue, oldValue) => {
-  if (newValue === oldValue) return;
-  gamesType.value = newValue ? "search" : "spotlight";
-});
 </script>
 
 <template>
@@ -68,7 +61,7 @@ watch(searchText, (newValue, oldValue) => {
           <SearchBar />
         </q-card-section>
       </q-card>
-      <GamesCoverDisplay :type="gamesType" />
+      <GamesCoverDisplay />
     </q-page-container>
 
     <q-footer elevated class="bg-grey-8 text-white">

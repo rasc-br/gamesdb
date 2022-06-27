@@ -28,10 +28,11 @@ export const useGameStore = defineStore("gameStore", {
             id: gameCover.game as number,
             cover,
           });
-          return;
+        } else {
+          this[gamesGroup][consoleName][gameIndex].cover = cover;
         }
-        this[gamesGroup][consoleName][gameIndex].cover = cover;
       });
+      // Merge spotlightGames and searchGames into allGames to reduce API calls?
     },
   },
 });

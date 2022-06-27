@@ -7,6 +7,7 @@ interface Props {
   perspectiveAngle?: number;
   squareSize?: number;
 }
+// TODO: New Vue syntax for Typescript Props
 const props = withDefaults(defineProps<Props>(), {
   subtitle: "",
   imageUrl: "",
