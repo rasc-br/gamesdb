@@ -16,6 +16,7 @@ export interface FirebaseConfig {
 
 export type ConsoleName = 'main' | 'atari2600' | 'msx' | 'amiga';
 export type OffsetType = 'spotlight' | 'search';
+export type CurrentView = 'singleGame' | 'search';
 
 export interface ConsoleInfo {
   name: ConsoleName;
@@ -26,6 +27,7 @@ export interface ConsoleInfo {
 export interface Game {
   id: number;
   cover: GameCover;
+  name?: string;
 }
 
 export interface GameCover {

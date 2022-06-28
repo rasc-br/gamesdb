@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import SearchBar from "../components/SearchBar.vue";
 import GamesCoverDisplay from "../components/GamesCoverDisplay.vue";
+import SingleGame from "../components/SingleGame.vue";
 import { useAppStatus } from "../store/useAppStatus";
 
 const toggleLeftDrawer = ref(false);
 const appStore = useAppStatus();
 const { currentConsole } = storeToRefs(appStore);
+const { currentView } = storeToRefs(appStore);
+
+const currentComponent = computed(() => {
+  return currentView.value === "singleGame" ? SingleGame : GamesCoverDisplay;
+});
 </script>
 
 <template>
@@ -61,7 +67,11 @@ const { currentConsole } = storeToRefs(appStore);
           <SearchBar />
         </q-card-section>
       </q-card>
-      <GamesCoverDisplay />
+      <div class="transition-container">
+        <Transition name="move-cards">
+          <component :is="currentComponent" />
+        </Transition>
+      </div>
     </q-page-container>
 
     <q-footer elevated class="bg-grey-8 text-white">
@@ -102,5 +112,27 @@ const { currentConsole } = storeToRefs(appStore);
 .app-layout {
   max-height: calc(var(--searchBarHeight) * 1px);
   min-height: unset !important;
+}
+
+.move-cards-leave-active,
+.move-cards-enter-active {
+  transition: all 0.3s ease;
+}
+.move-cards-enter-from {
+  opacity: 0;
+  transform: translate(130%, 0);
+}
+.move-cards-enter-to {
+  opacity: 1;
+  transform: translate(0%, 0);
+}
+.move-cards-leave-to {
+  opacity: 0;
+  transform: translate(-130%, 0);
+}
+.transition-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

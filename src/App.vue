@@ -11,6 +11,9 @@ appStore.setFirestore(firebase.firestore);
 </template>
 
 <style>
+html {
+  overflow: hidden;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -46,5 +49,25 @@ appStore.setFirestore(firebase.firestore);
     rgba(143, 139, 141, 1) 9%,
     rgba(250, 250, 250, 1) 100%
   );
+}
+.atari2600::-webkit-scrollbar-thumb {
+  background-color: rgba(226, 197, 2, 1);
+}
+.msx::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 39, 255, 1);
+}
+.amiga::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 0, 0, 1);
+}
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 20px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 20px;
 }
 </style>

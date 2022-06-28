@@ -5,7 +5,7 @@ import { useAppStatus } from "../store/useAppStatus";
 import CoverImage from "./CoverImage.vue";
 import APIService from "../helpers/apiService";
 import { useGameStore } from "../store/useGameStore";
-import { GamesGroup } from "../types";
+import { Game, GamesGroup } from "../types";
 import { QInfiniteScroll } from "quasar";
 
 const appStore = useAppStatus();
@@ -14,6 +14,7 @@ const { currentConsole } = storeToRefs(appStore);
 const { pagination } = storeToRefs(appStore);
 const { searchText } = storeToRefs(appStore);
 const { searchGames } = storeToRefs(gameStore);
+const { currentGame } = storeToRefs(gameStore);
 const limit = 20;
 const scrollTargetRef = ref<HTMLElement>();
 const infiniteScroll = ref<QInfiniteScroll>();
@@ -21,6 +22,7 @@ const retries = ref(0);
 const loading = ref(false);
 const lastFetchAmount = ref(0);
 const gamesType: Ref<"spotlight" | "search"> = ref("spotlight");
+const animateSelect = ref([] as boolean[]);
 
 // Checks search text to switch between spotlight and search
 // Gets more cover with new parameters
@@ -62,6 +64,15 @@ async function getMoreCovers(
   if (lastFetchAmount.value < limit) return;
   await getCovers();
   done();
+}
+
+async function selectGame(game: Game) {
+  animateSelect.value[game.id] = true;
+  setTimeout(() => {
+    animateSelect.value[game.id] = false;
+  }, 200);
+  currentGame.value = await getGame(game.id);
+  appStore.setView("singleGame");
 }
 
 const showGames = computed(() => {
@@ -109,6 +120,21 @@ async function getCovers(): Promise<unknown[]> {
   }
   return [];
 }
+
+async function getGame(gameId: number): Promise<Game> {
+  if (gameId === currentGame.value.id) return currentGame.value;
+  try {
+    const result = await APIService.callIGDB(
+      "games",
+      "*",
+      `where id = ${gameId}`
+    );
+    return result[0] as unknown as Game;
+  } catch (error) {
+    console.error("Error fetching game");
+    return {} as Game;
+  }
+}
 </script>
 
 <template>
@@ -126,7 +152,11 @@ async function getCovers(): Promise<unknown[]> {
         :key="game.id"
         class="game-cover"
       >
-        <CoverImage :image-url="game.cover.url" />
+        <CoverImage
+          :image-url="game.cover.url"
+          :class="[{ animateSelect: animateSelect[game.id] }, 'coverImage']"
+          @click="selectGame(game)"
+        />
       </div>
       <div class="break"></div>
       <template #loading>
@@ -144,43 +174,30 @@ async function getCovers(): Promise<unknown[]> {
 
 <style lang="scss" scoped>
 .games-card {
-  max-width: 80%;
+  width: 80%;
   height: calc(
     100vh - (var(--headerAndFooterHeight) + var(--searchBarHeight) + 50) * 1px
   );
+  position: absolute;
   overflow: auto;
   padding: 10px;
 }
 .games-session {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 .game-cover {
-  margin-bottom: 20px;
+  margin: 0px 5px 20px 0;
 }
 .break {
   flex-basis: 100%;
   height: 0;
 }
-.atari2600::-webkit-scrollbar-thumb {
-  background-color: rgba(226, 197, 2, 1);
+.coverImage {
+  transition: all 0.15s;
 }
-.msx::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 39, 255, 1);
-}
-.amiga::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 0, 0, 1);
-}
-::-webkit-scrollbar {
-  width: 7px;
-}
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey;
-  border-radius: 20px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: gray;
-  border-radius: 20px;
+.animateSelect {
+  transform: scale(0.85);
 }
 </style>
