@@ -65,6 +65,9 @@ const gameImageUrls = computed(() => {
         </div>
       </q-card>
     </q-card-section>
+    <q-card-section>
+      <q-card class="sin-medals"> </q-card>
+    </q-card-section>
 
     <q-dialog v-model="showBigImages" persistent :maximized="true">
       <q-card class="dialog-card">
@@ -130,5 +133,11 @@ const gameImageUrls = computed(() => {
 .carrosel-images {
   background-size: contain;
   background-repeat: no-repeat;
+}
+.title {
+  padding: 0px;
+}
+.sin-medals {
+  height: 80px;
 }
 </style>

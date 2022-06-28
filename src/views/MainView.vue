@@ -67,6 +67,7 @@ watch(searchText, (newValue) => {
       align="center"
       @click="toggleLeftDrawer = false"
     >
+      <!-- TODO: Move Search away for mobile version -->
       <q-card class="search-card">
         <q-card-section>
           <SearchBar />

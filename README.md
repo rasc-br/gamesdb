@@ -121,3 +121,7 @@ Create a `store` folder ans set up all store modules there.
 9. Add Quasar
 
 Follow: https://quasar.dev/start/vite-plugin
+
+## App creation
+
+1. Fetch from Public API www.igdb.com

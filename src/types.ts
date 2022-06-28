@@ -28,9 +28,11 @@ export interface Game {
   id: number;
   name?: string;
   cover: GameCover;
-  screenshots?: Screenshots[],
-  storyline?: string,
-  summary?: string
+  screenshots?: Screenshots[];
+  storyline?: string;
+  summary?: string;
+  videos?: string;
+  total_rating?: number;
 }
 
 export interface GameCover {
@@ -50,9 +52,9 @@ export type GamesGroup = {
 };
 
 export type Screenshots = {
-  id: number,
-  game: number,
-  height: number,
-  url: string,
-  width: number
+  id: number;
+  game: number;
+  height: number;
+  url: string;
+  width: number;
 }
