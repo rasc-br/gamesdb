@@ -48,6 +48,7 @@ function toogleModes(text: string) {
   searchGames.value = {} as GamesGroup;
   if (!text) {
     nextTick(() => (gamesType.value = text ? "search" : "spotlight"));
+    if (!showGames.value) getCovers();
     return;
   }
   gamesType.value = text ? "search" : "spotlight";

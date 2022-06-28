@@ -8,7 +8,7 @@ const gameStore = useGameStore();
 const appStore = useAppStatus();
 const { currentGame } = storeToRefs(gameStore);
 const { currentConsole } = storeToRefs(appStore);
-const slidePosition = ref(1);
+const slidePosition = ref(0);
 const showBigImages = ref(false);
 
 const gameImageUrls = computed(() => {
@@ -32,7 +32,15 @@ const gameImageUrls = computed(() => {
     </q-card-section>
     <q-card-section class="summary-content">
       <q-card class="images-card">
-        <q-carousel v-model="slidePosition" animated arrows navigation infinite>
+        <q-carousel
+          v-model="slidePosition"
+          swipeable
+          animated
+          arrows
+          navigation
+          infinite
+          :control-color="currentConsole.mainColor"
+        >
           <q-carousel-slide
             v-for="(imageUrl, index) in gameImageUrls"
             :key="index"
@@ -70,10 +78,12 @@ const gameImageUrls = computed(() => {
           <q-carousel
             v-model="slidePosition"
             style="height: 90%"
+            swipeable
             animated
             arrows
             navigation
             infinite
+            :control-color="currentConsole.mainColor"
           >
             <q-carousel-slide
               v-for="(imageUrl, index) in gameImageUrls"
