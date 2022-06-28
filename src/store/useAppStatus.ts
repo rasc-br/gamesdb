@@ -37,6 +37,7 @@ export const useAppStatus = defineStore("appStatus", {
     },
     setConsole(console: ConsoleName) {
       this.currentConsole = getConsoleValues(console);
+      this.searchText = "";
       this.currentView = "search";
     },
     setPaginationOffset(console: ConsoleName, type: OffsetType, offset: number) {

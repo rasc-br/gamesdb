@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, Ref, ref, watch, nextTick } from "vue";
+import { computed, Ref, ref, watch, nextTick, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
 import CoverImage from "./CoverImage.vue";
@@ -24,31 +24,18 @@ const lastFetchAmount = ref(0);
 const gamesType: Ref<"spotlight" | "search"> = ref("spotlight");
 const animateSelect = ref([] as boolean[]);
 
-// Checks search text to switch between spotlight and search
-// Gets more cover with new parameters
 watch(searchText, (newValue, oldValue) => {
   if (newValue === oldValue) return;
-  lastFetchAmount.value = limit;
-  searchGames.value = {} as GamesGroup;
-  if (!newValue) {
-    nextTick(() => (gamesType.value = newValue ? "search" : "spotlight"));
-    return;
-  }
-  gamesType.value = newValue ? "search" : "spotlight";
-  pagination.value[currentConsole.value.name].search = 0;
-  getCovers();
+  toogleModes(newValue);
 });
 
-// Checks console changes and gets more cover with new parameter
-watch([currentConsole], () => {
-  searchText.value = "";
+watch(currentConsole, () => {
   if (games.value[currentConsole.value.name]) return;
   retries.value = 0;
   lastFetchAmount.value = limit;
   getCovers();
 });
 
-// Contains games to be shown
 const games: Ref<GamesGroup> = computed(() => {
   const gamesGroup:
     | "spotlightGames"
@@ -56,7 +43,18 @@ const games: Ref<GamesGroup> = computed(() => {
   return storeToRefs(gameStore)[gamesGroup].value;
 });
 
-// Get more covers from Quasar Infinity Loader
+function toogleModes(text: string) {
+  lastFetchAmount.value = limit;
+  searchGames.value = {} as GamesGroup;
+  if (!text) {
+    nextTick(() => (gamesType.value = text ? "search" : "spotlight"));
+    return;
+  }
+  gamesType.value = text ? "search" : "spotlight";
+  pagination.value[currentConsole.value.name].search = 0;
+  getCovers();
+}
+
 async function getMoreCovers(
   index: number,
   done: (stop?: boolean | undefined) => void
@@ -135,6 +133,11 @@ async function getGame(gameId: number): Promise<Game> {
     return {} as Game;
   }
 }
+
+onMounted(() => {
+  gamesType.value = "search";
+  toogleModes(searchText.value);
+});
 </script>
 
 <template>

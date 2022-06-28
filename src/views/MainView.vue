@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import SearchBar from "../components/SearchBar.vue";
 import GamesCoverDisplay from "../components/GamesCoverDisplay.vue";
 import SingleGame from "../components/SingleGame.vue";
@@ -10,9 +10,14 @@ const toggleLeftDrawer = ref(false);
 const appStore = useAppStatus();
 const { currentConsole } = storeToRefs(appStore);
 const { currentView } = storeToRefs(appStore);
+const { searchText } = storeToRefs(appStore);
 
 const currentComponent = computed(() => {
   return currentView.value === "singleGame" ? SingleGame : GamesCoverDisplay;
+});
+watch(searchText, (newValue) => {
+  if (!newValue) return;
+  appStore.setView("search");
 });
 </script>
 
