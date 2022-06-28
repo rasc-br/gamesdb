@@ -26,8 +26,11 @@ export interface ConsoleInfo {
 
 export interface Game {
   id: number;
-  cover: GameCover;
   name?: string;
+  cover: GameCover;
+  screenshots?: Screenshots[],
+  storyline?: string,
+  summary?: string
 }
 
 export interface GameCover {
@@ -45,3 +48,11 @@ export type Pagination = {
 export type GamesGroup = {
   [key in ConsoleName]: Game[];
 };
+
+export type Screenshots = {
+  id: number,
+  game: number,
+  height: number,
+  url: string,
+  width: number
+}

@@ -69,7 +69,7 @@ async function selectGame(game: Game) {
   setTimeout(() => {
     animateSelect.value[game.id] = false;
   }, 200);
-  currentGame.value = await getGame(game.id);
+  currentGame.value = await getGame(game);
   appStore.setView("singleGame");
 }
 
@@ -119,14 +119,16 @@ async function getCovers(): Promise<unknown[]> {
   return [];
 }
 
-async function getGame(gameId: number): Promise<Game> {
-  if (gameId === currentGame.value.id) return currentGame.value;
+async function getGame(game: Game): Promise<Game> {
+  if (game.id === currentGame.value.id) return currentGame.value;
   try {
     const result = await APIService.callIGDB(
       "games",
-      "*",
-      `where id = ${gameId}`
+      "*, screenshots.*",
+      `where id = ${game.id}`
     );
+    if (!result.length) return {} as Game;
+    result[0].cover = game.cover;
     return result[0] as unknown as Game;
   } catch (error) {
     console.error("Error fetching game");
