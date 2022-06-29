@@ -25,7 +25,8 @@ export const useGameStore = defineStore("gameStore", {
         if (gameIndex === -1) {
           if (!this[gamesGroup][consoleName]) this[gamesGroup][consoleName] = [];
           this[gamesGroup][consoleName].push({
-            id: gameCover.game as number,
+            id: (gameCover.game as Record<string, unknown>).id as number,
+            slug: (gameCover.game as Record<string, unknown>).slug as string,
             cover,
           });
         } else {

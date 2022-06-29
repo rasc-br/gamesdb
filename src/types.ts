@@ -17,6 +17,8 @@ export interface FirebaseConfig {
 export type ConsoleName = 'main' | 'atari2600' | 'msx' | 'amiga';
 export type OffsetType = 'spotlight' | 'search';
 export type CurrentView = 'singleGame' | 'search';
+export type MedalType = 'sin-trophy' | 'nonsense' | 'race' | 'random' | 'endless' | 'frenetic'
+ | 'boring' | 'underground' | 'impossible' | 'cheat';
 
 export interface ConsoleInfo {
   name: ConsoleName;
@@ -26,14 +28,15 @@ export interface ConsoleInfo {
 
 export interface Game {
   id: number;
+  slug: string;
   name?: string;
-  slug?: string;
   cover: GameCover;
   screenshots?: Screenshots[];
   storyline?: string;
   summary?: string;
   videos?: string;
   total_rating?: number;
+  medals?: MedalType[];
 }
 
 export interface GameCover {

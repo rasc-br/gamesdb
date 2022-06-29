@@ -3,6 +3,7 @@ import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import { useAppStatus } from "../store/useAppStatus";
 import { useGameStore } from "../store/useGameStore";
+import SinMedals from "../components/SinMedals.vue";
 
 const gameStore = useGameStore();
 const appStore = useAppStatus();
@@ -13,7 +14,7 @@ const showBigImages = ref(false);
 
 const gameImageUrls = computed(() => {
   const imageUrls = [];
-  imageUrls.push(currentGame.value.cover.url);
+  imageUrls.push(currentGame.value.cover?.url);
   if (currentGame.value.screenshots) {
     currentGame.value.screenshots.forEach((screenshot) => {
       imageUrls.push(
@@ -101,8 +102,8 @@ const igdbRating = computed(() => {
         </q-card>
       </div>
     </q-card-section>
-    <q-card-section>
-      <q-card class="sin-medals"> </q-card>
+    <q-card-section v-if="currentGame.medals">
+      <SinMedals :medals="currentGame.medals" />
     </q-card-section>
 
     <q-dialog v-model="showBigImages" persistent :maximized="true">
@@ -172,9 +173,7 @@ const igdbRating = computed(() => {
 .title {
   padding: 0px;
 }
-.sin-medals {
-  height: 80px;
-}
+
 .right-side {
   width: 40%;
 }

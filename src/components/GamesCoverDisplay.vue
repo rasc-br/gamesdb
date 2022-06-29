@@ -7,6 +7,7 @@ import APIService from "../helpers/apiService";
 import { useGameStore } from "../store/useGameStore";
 import { Game, GamesGroup } from "../types";
 import { QInfiniteScroll } from "quasar";
+import { getDoc, doc } from "firebase/firestore";
 
 const appStore = useAppStatus();
 const gameStore = useGameStore();
@@ -15,6 +16,7 @@ const { pagination } = storeToRefs(appStore);
 const { searchText } = storeToRefs(appStore);
 const { searchGames } = storeToRefs(gameStore);
 const { currentGame } = storeToRefs(gameStore);
+const { firestore } = storeToRefs(appStore);
 const limit = 20;
 const scrollTargetRef = ref<HTMLElement>();
 const infiniteScroll = ref<QInfiniteScroll>();
@@ -81,6 +83,14 @@ const showGames = computed(() => {
   );
 });
 
+async function checkFirebase(gameSlug: string): Promise<Game> {
+  const gameSnapshot = await getDoc(
+    doc(firestore.value, currentConsole.value.name, gameSlug)
+  );
+  if (gameSnapshot.exists()) return gameSnapshot.data() as Game;
+  return {} as Game;
+}
+
 async function getCovers(): Promise<unknown[]> {
   if (!currentConsole.value.igdbId || retries.value > 3) return [];
   const currentOffset =
@@ -93,7 +103,7 @@ async function getCovers(): Promise<unknown[]> {
       : "";
     const result = await APIService.callIGDB(
       "covers",
-      "*",
+      "*, game.slug",
       `${query}${searchQuery}`,
       `limit ${limit}; offset ${currentOffset}`,
       `sort game.rating desc`
@@ -122,6 +132,10 @@ async function getCovers(): Promise<unknown[]> {
 
 async function getGame(game: Game): Promise<Game> {
   if (game.id === currentGame.value.id) return currentGame.value;
+
+  const fromFirebase = await checkFirebase(game.slug);
+  if (Object.keys(fromFirebase).length) return fromFirebase;
+
   try {
     const result = await APIService.callIGDB(
       "games",
