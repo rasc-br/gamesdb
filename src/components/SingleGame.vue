@@ -23,6 +23,10 @@ const gameImageUrls = computed(() => {
   }
   return imageUrls;
 });
+
+const igdbRating = computed(() => {
+  return Math.ceil(currentGame.value.total_rating || 0);
+});
 </script>
 
 <template>
@@ -51,19 +55,51 @@ const gameImageUrls = computed(() => {
           />
         </q-carousel>
       </q-card>
-      <q-card :class="['text-card', currentConsole.name]">
-        <div v-if="currentGame.storyline">
-          <div class="text-subtitle2">Story</div>
-          <p class="text-caption">{{ currentGame.storyline }}</p>
-        </div>
-        <div v-if="currentGame.summary">
-          <div class="text-subtitle2">Summary</div>
-          <p class="text-caption">{{ currentGame.summary }}</p>
-        </div>
-        <div v-if="!currentGame.summary && !currentGame.storyline">
-          <div class="text-subtitle2">No information</div>
-        </div>
-      </q-card>
+      <div class="right-side">
+        <q-card :class="['text-card', currentConsole.name]">
+          <div v-if="currentGame.storyline">
+            <div class="text-subtitle2">Story</div>
+            <p class="text-caption">{{ currentGame.storyline }}</p>
+          </div>
+          <div v-if="currentGame.summary">
+            <div class="text-subtitle2">Summary</div>
+            <p class="text-caption">{{ currentGame.summary }}</p>
+          </div>
+          <div v-if="!currentGame.summary && !currentGame.storyline">
+            <div class="text-subtitle2">No information</div>
+          </div>
+        </q-card>
+        <q-card class="igdb-rating">
+          <div class="q-pa-md">
+            <q-linear-progress
+              size="25px"
+              rounded
+              :value="igdbRating / 100"
+              :color="currentConsole.mainColor"
+            >
+              <div class="absolute-full flex flex-center">
+                <q-badge
+                  color="white"
+                  :text-color="currentConsole.mainColor"
+                  :label="`${igdbRating} %`"
+                />
+              </div>
+            </q-linear-progress>
+            <div class="icons-container">
+              <q-icon
+                name="fa-solid fa-thumbs-down"
+                :color="currentConsole.mainColor"
+                class="icons"
+              />
+              <q-icon
+                name="fa-solid fa-thumbs-up"
+                :color="currentConsole.mainColor"
+                class="icons"
+              />
+            </div>
+          </div>
+        </q-card>
+      </div>
     </q-card-section>
     <q-card-section>
       <q-card class="sin-medals"> </q-card>
@@ -113,7 +149,6 @@ const gameImageUrls = computed(() => {
   padding: 10px;
 }
 .text-card {
-  width: 40%;
   padding: 10px;
   text-align: justify;
   overflow: auto;
@@ -139,5 +174,20 @@ const gameImageUrls = computed(() => {
 }
 .sin-medals {
   height: 80px;
+}
+.right-side {
+  width: 40%;
+}
+.igdb-rating {
+  height: calc(var(--mainCardHeight) / 6.3);
+  margin-top: 10px;
+}
+.icons {
+  font-size: 30px;
+}
+.icons-container {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
 }
 </style>

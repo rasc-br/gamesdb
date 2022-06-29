@@ -125,3 +125,4 @@ Follow: https://quasar.dev/start/vite-plugin
 ## App creation
 
 1. Fetch from Public API www.igdb.com
+2. Set up Firestore to store/fetch new information

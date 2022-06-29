@@ -5,12 +5,18 @@ import SearchBar from "../components/SearchBar.vue";
 import GamesCoverDisplay from "../components/GamesCoverDisplay.vue";
 import SingleGame from "../components/SingleGame.vue";
 import { useAppStatus } from "../store/useAppStatus";
+import { doc, setDoc } from "firebase/firestore";
+import { useGameStore } from "../store/useGameStore";
 
 const toggleLeftDrawer = ref(false);
 const appStore = useAppStatus();
+const gameStore = useGameStore();
 const { currentConsole } = storeToRefs(appStore);
 const { currentView } = storeToRefs(appStore);
 const { searchText } = storeToRefs(appStore);
+const { firestore } = storeToRefs(appStore);
+const { currentGame } = storeToRefs(gameStore);
+const savingFirestore = ref(false);
 
 const currentComponent = computed(() => {
   return currentView.value === "singleGame" ? SingleGame : GamesCoverDisplay;
@@ -19,6 +25,26 @@ watch(searchText, (newValue) => {
   if (!newValue) return;
   appStore.setView("search");
 });
+
+const showSetInFirestore = computed(() => {
+  return import.meta.env.MODE === "development" && currentGame.value.id;
+});
+
+async function setGameInFirestore() {
+  savingFirestore.value = true;
+  const id = currentGame.value.slug || currentGame.value.id.toString();
+  try {
+    await setDoc(
+      doc(firestore.value, currentConsole.value.name, id),
+      currentGame.value
+    ),
+      { merge: true };
+  } catch (error) {
+    console.error(error);
+  } finally {
+    savingFirestore.value = false;
+  }
+}
 </script>
 
 <template>
@@ -82,8 +108,21 @@ watch(searchText, (newValue) => {
 
     <q-footer elevated class="bg-grey-8 text-white">
       <q-toolbar>
-        <q-toolbar-title>
+        <q-toolbar-title class="sin-footer">
           <div class="text-subtitle2">SIN Games Database</div>
+          <q-btn
+            v-if="showSetInFirestore"
+            round
+            size="xs"
+            :loading="savingFirestore"
+            :color="currentConsole.mainColor"
+            icon="camera_rear"
+            @click="setGameInFirestore"
+          >
+            <template #loading>
+              <q-spinner-gears />
+            </template>
+          </q-btn>
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -140,5 +179,10 @@ watch(searchText, (newValue) => {
   width: 100%;
   display: flex;
   justify-content: center;
+}
+
+.sin-footer {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
