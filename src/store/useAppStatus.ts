@@ -1,6 +1,12 @@
 import { Firestore } from "firebase/firestore";
 import { defineStore } from "pinia";
-import { ConsoleInfo, ConsoleName, CurrentView, OffsetType, Pagination } from "../types";
+import {
+  ConsoleInfo,
+  ConsoleName,
+  CurrentView,
+  OffsetType,
+  Pagination,
+} from "../types";
 
 function getConsoleValues(console: ConsoleName): ConsoleInfo {
   switch (console) {
@@ -19,6 +25,7 @@ export const useAppStatus = defineStore("appStatus", {
   state: () => ({
     firestore: {} as Firestore,
     loading: false,
+    savingFirestore: false,
     currentConsole: {
       name: "main",
       mainColor: "grey-6",
@@ -26,7 +33,7 @@ export const useAppStatus = defineStore("appStatus", {
     } as ConsoleInfo,
     pagination: {} as Pagination,
     searchText: "",
-    currentView: 'search' as CurrentView,
+    currentView: "search" as CurrentView,
   }),
   actions: {
     setFirestore(firestore: Firestore) {
@@ -40,12 +47,20 @@ export const useAppStatus = defineStore("appStatus", {
       this.searchText = "";
       this.currentView = "search";
     },
-    setPaginationOffset(console: ConsoleName, type: OffsetType, offset: number) {
-      if (!this.pagination[console]) this.pagination = { ...this.pagination, ...{[console]: { [type]: 0}}}
+    setPaginationOffset(
+      console: ConsoleName,
+      type: OffsetType,
+      offset: number
+    ) {
+      if (!this.pagination[console])
+        this.pagination = {
+          ...this.pagination,
+          ...{ [console]: { [type]: 0 } },
+        };
       this.pagination[console][type] = offset;
     },
     setView(view: CurrentView) {
       this.currentView = view;
-    }
+    },
   },
 });

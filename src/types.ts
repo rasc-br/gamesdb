@@ -14,11 +14,20 @@ export interface FirebaseConfig {
   appId: string;
 }
 
-export type ConsoleName = 'main' | 'atari2600' | 'msx' | 'amiga';
-export type OffsetType = 'spotlight' | 'search';
-export type CurrentView = 'singleGame' | 'search';
-export type MedalType = 'sin-trophy' | 'nonsense' | 'race' | 'random' | 'endless' | 'frenetic'
- | 'boring' | 'underground' | 'impossible' | 'cheat';
+export type ConsoleName = "main" | "atari2600" | "msx" | "amiga";
+export type OffsetType = "spotlight" | "search";
+export type CurrentView = "singleGame" | "search";
+export type MedalType =
+  | "sin-trophy"
+  | "nonsense"
+  | "race"
+  | "random"
+  | "endless"
+  | "frenetic"
+  | "boring"
+  | "underground"
+  | "impossible"
+  | "cheat";
 
 export interface ConsoleInfo {
   name: ConsoleName;
@@ -61,4 +70,4 @@ export type Screenshots = {
   height: number;
   url: string;
   width: number;
-}
+};
