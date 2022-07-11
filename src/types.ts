@@ -45,7 +45,10 @@ export interface Game {
   summary?: string;
   videos?: string;
   total_rating?: number;
+  total_rating_count?: number;
   medals?: MedalType[];
+  upvotes?: string[];
+  downvotes?: string[];
 }
 
 export interface GameCover {

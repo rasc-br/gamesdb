@@ -4,6 +4,7 @@ import { computed, ref } from "vue";
 import { useAppStatus } from "../store/useAppStatus";
 import { useGameStore } from "../store/useGameStore";
 import SinMedals from "../components/SinMedals.vue";
+import { useUserStore } from "../store/useUserStore";
 
 const gameStore = useGameStore();
 const appStore = useAppStatus();
@@ -11,6 +12,8 @@ const { currentGame } = storeToRefs(gameStore);
 const { currentConsole } = storeToRefs(appStore);
 const slidePosition = ref(0);
 const showBigImages = ref(false);
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 
 const gameImageUrls = computed(() => {
   const imageUrls = [];
@@ -23,6 +26,16 @@ const gameImageUrls = computed(() => {
     });
   }
   return imageUrls;
+});
+
+const voted = computed(() => {
+  if (currentGame.value.upvotes?.includes(user.value.login)) {
+    return "upvotes";
+  }
+  if (currentGame.value.downvotes?.includes(user.value.login)) {
+    return "downvotes";
+  }
+  return "";
 });
 
 const igdbRating = computed(() => {
@@ -90,12 +103,22 @@ const igdbRating = computed(() => {
               <q-icon
                 name="fa-solid fa-thumbs-down"
                 :color="currentConsole.mainColor"
-                class="icons"
+                :class="['icons', voted === 'downvotes' ? 'voted' : '']"
+                @click="
+                  voted !== 'downvotes'
+                    ? gameStore.updateRating('downvotes', voted)
+                    : null
+                "
               />
               <q-icon
                 name="fa-solid fa-thumbs-up"
                 :color="currentConsole.mainColor"
-                class="icons"
+                :class="['icons', voted === 'upvotes' ? 'voted' : '']"
+                @click="
+                  voted !== 'upvotes'
+                    ? gameStore.updateRating('upvotes', voted)
+                    : null
+                "
               />
             </div>
           </div>
@@ -183,6 +206,10 @@ const igdbRating = computed(() => {
 }
 .icons {
   font-size: 30px;
+  cursor: pointer;
+  &.voted {
+    filter: brightness(150%) invert(75%);
+  }
 }
 .icons-container {
   display: flex;

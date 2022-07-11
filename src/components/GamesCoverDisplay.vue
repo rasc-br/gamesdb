@@ -72,7 +72,7 @@ async function selectGame(game: Game) {
   setTimeout(() => {
     animateSelect.value[game.id] = false;
   }, 200);
-  currentGame.value = await getGame(game);
+  gameStore.setCurrentGame(await getGame(game));
   appStore.setView("singleGame");
 }
 
