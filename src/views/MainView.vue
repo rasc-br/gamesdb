@@ -23,7 +23,11 @@ watch(searchText, (newValue) => {
 });
 
 const showSetInFirestore = computed(() => {
-  return import.meta.env.MODE === "development" && currentGame.value.id;
+  return (
+    import.meta.env.MODE === "development" &&
+    currentGame.value.id &&
+    !currentGame.value.fromFirebase
+  );
 });
 </script>
 
@@ -160,7 +164,6 @@ const showSetInFirestore = computed(() => {
   display: flex;
   justify-content: center;
 }
-
 .sin-footer {
   display: flex;
   justify-content: space-between;

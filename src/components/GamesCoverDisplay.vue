@@ -134,7 +134,10 @@ async function getGame(game: Game): Promise<Game> {
   if (game.id === currentGame.value.id) return currentGame.value;
 
   const fromFirebase = await checkFirebase(game.slug);
-  if (Object.keys(fromFirebase).length) return fromFirebase;
+  if (Object.keys(fromFirebase).length) {
+    fromFirebase.fromFirebase = true;
+    return fromFirebase;
+  }
 
   try {
     const result = await APIService.callIGDB(

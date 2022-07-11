@@ -49,6 +49,7 @@ export interface Game {
   medals?: MedalType[];
   upvotes?: string[];
   downvotes?: string[];
+  fromFirebase?: boolean;
 }
 
 export interface GameCover {
