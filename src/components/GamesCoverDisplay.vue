@@ -93,6 +93,7 @@ async function checkFirebase(gameSlug: string): Promise<Game> {
 
 async function getCovers(): Promise<unknown[]> {
   if (!currentConsole.value.igdbId || retries.value > 3) return [];
+  if (!searchText.value) gamesType.value = "spotlight";
   const currentOffset =
     pagination.value[currentConsole.value.name]?.[gamesType.value] || 0;
   try {
