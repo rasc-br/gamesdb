@@ -83,9 +83,29 @@ const showSetInFirestore = computed(() => {
           <SearchBar />
         </q-card-section>
       </q-card>
-      <div class="transition-container">
-        <Transition name="move-cards">
-          <component :is="currentComponent" />
+      <div class="center-content">
+        <Transition name="fade">
+          <q-btn
+            v-if="currentView === 'singleGame'"
+            round
+            :color="currentConsole.mainColor"
+            icon="arrow_back"
+            class="page-change left"
+          />
+        </Transition>
+        <div class="transition-container">
+          <Transition name="move-cards">
+            <component :is="currentComponent" />
+          </Transition>
+        </div>
+        <Transition name="fade">
+          <q-btn
+            v-if="currentView === 'singleGame'"
+            round
+            :color="currentConsole.mainColor"
+            icon="arrow_forward"
+            class="page-change right"
+          />
         </Transition>
       </div>
     </q-page-container>
@@ -142,7 +162,19 @@ const showSetInFirestore = computed(() => {
   max-height: calc(var(--searchBarHeight) * 1px);
   min-height: unset !important;
 }
-
+.center-content {
+  display: flex;
+}
+.page-change {
+  height: fit-content;
+  align-self: center;
+  &.right {
+    margin-right: 20px;
+  }
+  &.left {
+    margin-left: 20px;
+  }
+}
 .move-cards-leave-active,
 .move-cards-enter-active {
   transition: all 0.3s ease;
@@ -163,6 +195,15 @@ const showSetInFirestore = computed(() => {
   width: 100%;
   display: flex;
   justify-content: center;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 .sin-footer {
   display: flex;
