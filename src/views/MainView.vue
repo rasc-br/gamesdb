@@ -11,8 +11,13 @@ const toggleLeftDrawer = ref(false);
 const appStore = useAppStatus();
 const gameStore = useGameStore();
 const { currentGame } = storeToRefs(gameStore);
-const { currentConsole, currentView, searchText, savingFirestore } =
-  storeToRefs(appStore);
+const {
+  currentConsole,
+  currentView,
+  searchText,
+  savingFirestore,
+  gameInfoPage,
+} = storeToRefs(appStore);
 
 const currentComponent = computed(() => {
   return currentView.value === "singleGame" ? SingleGame : GamesCoverDisplay;
@@ -91,6 +96,7 @@ const showSetInFirestore = computed(() => {
             :color="currentConsole.mainColor"
             icon="arrow_back"
             class="page-change left"
+            @click="gameInfoPage--"
           />
         </Transition>
         <div class="transition-container">
@@ -105,6 +111,7 @@ const showSetInFirestore = computed(() => {
             :color="currentConsole.mainColor"
             icon="arrow_forward"
             class="page-change right"
+            @click="gameInfoPage++"
           />
         </Transition>
       </div>

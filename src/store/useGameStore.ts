@@ -60,6 +60,7 @@ export const useGameStore = defineStore("gameStore", {
           this.currentGame
         ),
           { merge: true };
+        this.currentGame.fromFirebase = true;
       } catch (error) {
         console.error(error);
       } finally {

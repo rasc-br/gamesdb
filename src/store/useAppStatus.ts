@@ -34,6 +34,7 @@ export const useAppStatus = defineStore("appStatus", {
     pagination: {} as Pagination,
     searchText: "",
     currentView: "search" as CurrentView,
+    gameInfoPage: 1,
   }),
   actions: {
     setFirestore(firestore: Firestore) {
